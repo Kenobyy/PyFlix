@@ -1,0 +1,86 @@
+{% extends "ProyectoPyFlixApp/base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+
+<div class="container mt-4 mb-4">
+  <form method="get" action="{% url 'buscar_series' %}">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Buscar series por nombre..." name="q" style="background-color: #EBEBEB;">
+          <div class="input-group-append">
+            <button class="btn btn-outline-info" type="submit">Buscar</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <select class="form-control" id="categoria" name="categoria" style="background-color: #EBEBEB;">
+            <option value="">Todas las categorías</option>
+            <option value="Acción">Acción</option>
+            <option value="Comedia">Comedia</option>
+            <option value="Drama">Drama</option>
+            <option value="Ciencia Ficción">Ciencia Ficción</option>
+            <option value="Fantasía">Fantasía</option>
+            <option value="Animación">Animación</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+    {% for serie in lista_series %}
+
+
+   <section class="page-section clearfix">
+    <div class="container">
+      <div class="intro3">
+        <img class="intro-img3 img-fluid mb-3 mb-lg-0 rounded" src="{{serie.imagen.url}}" alt="" style="width: 30%">
+        <div class="intro-text3 text-center bg-faded p-5 rounded">
+          <h2 class="section-heading mb-4" >
+            <span class="section-heading-upper">Creador: {{serie.creador}}</span>
+            <span class="section-heading-lower">{{serie.titulo}}</span>
+            <span class="section-heading-upper">Temporadas: {{serie.num_temporadas}} | Capítulos: {{serie.num_capitulos}}</span>
+
+          </h2>
+          <p class="mb-3" style="font-size: 15px;">{{serie.argumento}}
+          </p>
+
+            <div class="movie-details-and-buttons">
+                <p class="movie-details">
+                    <span class="detail-item">Género: {{ serie.categoria }} | </span>
+                    <span class="detail-item">Año: {{ serie.anio_estreno }} | </span>
+                    <span class="detail-item">Duración Capítulo: {{ serie.duracion }} min.</span>
+                </p>
+
+                <div class="button-form d-flex justify-content-center">
+                    <form method="post" action="{% url 'cambiar_vista_serie' serie.id %}">
+                        {% csrf_token %}
+                        <button type="submit" id="vista-btn-serie{{ serie.id }}" class="btn {% if serie.vista %}btn-success{% else %}btn-outline-success{% endif %} mr-2">Vista</button>
+                    </form>
+                    <form method="post" action="{% url 'cambiar_favorito_serie' serie.id %}">
+                        {% csrf_token %}
+                        <button type="submit" id="favorito-btn-serie{{ serie.id }}" class="btn {% if serie.favorito %}btn-danger{% else %}btn-outline-danger{% endif %} ml-2 mr-2">Favorito</button>
+                    </form>
+                    <a href="{{serie.enlace}}" target="_blank">
+                        <button type="button" class="btn btn-outline-info ml-2">Play</button>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+
+{% endfor%}
+
+{% endblock %}
