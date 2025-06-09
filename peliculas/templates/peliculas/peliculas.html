@@ -1,0 +1,80 @@
+{% extends "ProyectoPyFlixApp/base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="container mt-4 mb-4">
+  <form method="get" action="{% url 'buscar_peliculas' %}">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Buscar películas por nombre..." name="q" style="background-color: #EBEBEB;">
+          <div class="input-group-append">
+            <button class="btn btn-outline-info" type="submit">Buscar</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <select class="form-control" id="categoria" name="categoria" style="background-color: #EBEBEB;">
+            <option value="">Todas las categorías</option>
+            <option value="Acción">Acción</option>
+            <option value="Comedia">Comedia</option>
+            <option value="Drama">Drama</option>
+            <option value="Ciencia Ficción">Ciencia Ficción</option>
+            <option value="Fantasía">Fantasía</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+    {% for pelicula in lista_peliculas %}
+
+
+   <section class="page-section clearfix">
+    <div class="container">
+      <div class="intro3">
+        <img class="intro-img3 img-fluid mb-3 mb-lg-0 rounded" src="{{pelicula.imagen.url}}" alt="" style="width: 30%">
+        <div class="intro-text3 text-center bg-faded p-5 rounded">
+          <h2 class="section-heading mb-4" >
+            <span class="section-heading-upper">Director: {{pelicula.director}}</span>
+            <span class="section-heading-lower">{{pelicula.titulo}}</span>
+          </h2>
+          <p class="mb-3" style="font-size: 15px;">{{pelicula.argumento}}
+          </p>
+
+            <div class="movie-details-and-buttons">
+                <p class="movie-details">
+                    <span class="detail-item">Género: {{ pelicula.categoria }} | </span>
+                    <span class="detail-item">Año: {{ pelicula.anio_estreno }} | </span>
+                    <span class="detail-item">Duración: {{ pelicula.duracion }} min.</span>
+                </p>
+
+                <div class="button-form d-flex justify-content-center">
+                    <form method="post" action="{% url 'cambiar_vista' pelicula.id %}">
+                        {% csrf_token %}
+                        <button type="submit" id="favorito-btn-pelicula{{ pelicula.id }}" class="btn {% if pelicula.vista %}btn-success{% else %}btn-outline-success{% endif %} mr-2">Vista</button>
+                    </form>
+                    <form method="post" action="{% url 'cambiar_favorito' pelicula.id %}">
+                        {% csrf_token %}
+                        <button type="submit" id="vista-btn-pelicula{{ pelicula.id }}" class="btn {% if pelicula.favorito %}btn-danger{% else %}btn-outline-danger{% endif %} ml-2 mr-2">Favorito</button>
+                    </form>
+                    <form method="post" action="{% url 'play_vista' pelicula.id %}" target="_blank">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-info ml-2">Play</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+{% endfor%}
+
+{% endblock %}
